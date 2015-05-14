@@ -1,0 +1,68 @@
+<html>
+<head>
+<script src="jquery-1.6.3.min.js" language="javascript" type="text/javascript">
+    </script>
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $("#btnShowTrackList").click(function () {
+			var url = "/blog/" + $("#txtBaseHostname").val()+"/trends";type = "get";
+             AddtoTrack($("#txtBaseHostname").val(),url,type);
+            });
+        }); 
+		
+		
+		$(function () {
+            $("#btnAddtoTrack").click(function () {
+			var url = "/" + $("#txtBaseHostname").val();type = "post";
+             AddtoTrack($("#txtBaseHostname").val(),url,type);
+            });
+        }); 
+        //验证是否为空
+        function IsNullOrEmpty(dataStr) {
+            if (dataStr == null || dataStr == "" || dataStr == undefined || dataStr == "undefined") {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        //获取API接口数据
+        function AddtoTrack(hostname,url,type) {
+
+			$("#divTrackList").empty();
+            if (IsNullOrEmpty(hostname)) {
+                alert("Sorry,Base-host name can not be empty!");
+				$("#txtBaseHostname").focus();
+                return;
+            }
+
+            
+            $.ajax({
+                url:url,
+                type: type,
+                success: function (data) {
+                    if (data != null && data != null && data != undefined) {
+						 $("#divTrackList").html(data);
+                    } else {
+                        $("#divTrackList").html("Post Failure");
+                    }
+                },
+				error:function(XMLHr,err,excep)//emmit in case of error
+				{
+					$("#divTrackList").html("Error:"+err+url+"<br/> XMLHttpRequest.status=" + XMLHr.status + "</br>XMLHttpRequest.readyState=" + XMLHr.readyState);
+				}
+            });
+        }
+    </script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
+<body>
+    <p>Blog {Base-Hostname}
+      <input id="txtBaseHostname" value="" size="80" />
+    </p>
+    <button type="button" id="btnAddtoTrack">Add to Track(This button will call 'http:IP:port/{base-hostname}')</button>
+    
+	<br>
+    <button type="button" id="btnShowTrackList">ShowTrackList(This button will call 'http:IP:port/blog/{base-hostname}/trends')</button>
+    <div id="divTrackList">
+    </div>
+</body>
+</html>
